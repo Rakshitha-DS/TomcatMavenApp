@@ -7,28 +7,23 @@ pool:
 stages:
 - stage: Build
   jobs:
-  - job: BuildJob
+  - job: Build
     steps:
     - task: Maven@4
       inputs:
-        mavenPomFile: 'pom.xml'
-        goals: 'clean package'
-        publishJUnitResults: true
-        testResultsFiles: '**/surefire-reports/TEST-*.xml'
-
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: 'target'
-        ArtifactName: 'drop'
-        publishLocation: 'Container'
+        mavenPomFile: pom.xml
+        goals: clean package
 
 - stage: Deploy
   dependsOn: Build
   jobs:
-  - job: DeployJob
+  - job: Deploy
     steps:
-    - script: |
-        echo "Starting Deployment"
-        echo "Deploying TomcatMavenApp"
-        echo "Deployment Successful"
-      displayName: 'Deploy Application'
+    - script: echo "Deployment Successful"
+
+- stage: Verification
+  dependsOn: Deploy
+  jobs:
+  - job: Verify
+    steps:
+    - script: echo "Verification Successful"
